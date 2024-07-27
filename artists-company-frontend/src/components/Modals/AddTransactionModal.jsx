@@ -1,15 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const AddTransactionModal = ({ show, handleClose, handleSave, formData, handleFormChange }) => {
+  const [isFormValid, setIsFormValid] = useState(true);
+
   useEffect(() => {
     if (show) {
       const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
       handleFormChange({ target: { name: 'date', value: today } });
     }
   }, [show, handleFormChange]);
+
+  useEffect(() => {
+    // Validate form fields
+    const { type, amount, description } = formData;
+    const isValid = type && amount && description;
+    setIsFormValid(isValid);
+  }, [formData]);
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -62,7 +71,11 @@ const AddTransactionModal = ({ show, handleClose, handleSave, formData, handleFo
         <Button variant="secondary" onClick={handleClose}>
           <FontAwesomeIcon icon={faTimes} /> Cancel
         </Button>
-        <Button variant="primary" onClick={handleSave}>
+        <Button
+          variant="primary"
+          onClick={handleSave}
+          disabled={!isFormValid} // Disable save button if form is not valid
+        >
           <FontAwesomeIcon icon={faSave} /> Save
         </Button>
       </Modal.Footer>
