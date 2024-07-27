@@ -1,16 +1,21 @@
 /* src/components/Home.css */
-th {
-    background-color: #6697c9; /* Light grey background */
+
+  
+  .description-column {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
-  /* src/components/Home.css */
-.table td, .table th {
-    vertical-align: middle;
+  .modal-content {
+    border-radius: 10px;
   }
   
-  .table .description-column {
-    max-width: 25vw; /* Adjust this value as needed */
-    word-wrap: break-word;
-    white-space: normal;
+  .modal-header {
+    background-color: #f7f7f7;
+  }
+  
+  .modal-footer {
+    background-color: #f7f7f7;
   }
   
