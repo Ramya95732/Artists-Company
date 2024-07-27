@@ -1,52 +1,50 @@
+// models/transactionModel.js
 const db = require('../config/db');
 
-// Function to get the latest running balance
-const getLatestRunningBalance = (callback) => {
-  db.get("SELECT running_balance FROM transactions ORDER BY date DESC, id DESC LIMIT 1", [], (err, row) => {
-    if (err) {
-      callback(err, null);
-    } else {
-      const lastRunningBalance = row ? row.running_balance : 0;
-      callback(null, lastRunningBalance);
-    }
-  });
-};
-
-// Add a new transaction and update the running balance
 const addTransaction = (transaction, callback) => {
   const { type, amount, description, date } = transaction;
+  if (!type || !amount || !description || !date) {
+    return callback(new Error('All fields are required'));
+  }
 
-  // Get the latest running balance
-  getLatestRunningBalance((err, lastRunningBalance) => {
+  // Calculate the running balance
+  let running_balance = 0;
+
+  // Get the last running balance from the most recent transaction
+  db.get('SELECT running_balance FROM transactions ORDER BY id DESC LIMIT 1', (err, row) => {
     if (err) {
-      return callback(err, null);
+      return callback(err);
     }
 
-    let running_balance;
-    if (type === "Debit") {
-      running_balance = lastRunningBalance - amount;
-    } else if (type === "Credit") {
-      running_balance = lastRunningBalance + amount;
-    } else {
-      return callback(new Error("Invalid transaction type"), null);
+    running_balance = row ? row.running_balance : 0;
+
+    if (type === 'Credit') {
+      running_balance += parseFloat(amount);
+    } else if (type === 'Debit') {
+      running_balance -= parseFloat(amount);
     }
 
-    db.run(`INSERT INTO transactions (type, amount, description, date, running_balance) VALUES (?, ?, ?, ?, ?)`,
-      [type, amount, description, date, running_balance],
-      function (err) {
-        callback(err, this.lastID);
-      });
+    const sql = `INSERT INTO transactions (type, amount, description, date, running_balance) VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [type, amount, description, date, running_balance], function (err) {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, this.lastID);
+    });
   });
 };
 
-// Fetch all transactions
 const getAllTransactions = (callback) => {
-  db.all("SELECT * FROM transactions ORDER BY date DESC, id DESC", [], (err, rows) => {
-    callback(err, rows);
+  const sql = 'SELECT * FROM transactions ORDER BY date DESC';
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, rows);
   });
 };
 
 module.exports = {
   addTransaction,
-  getAllTransactions
+  getAllTransactions,
 };

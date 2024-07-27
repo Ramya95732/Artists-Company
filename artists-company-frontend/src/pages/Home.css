@@ -1,0 +1,16 @@
+/* src/components/Home.css */
+th {
+    background-color: #6697c9; /* Light grey background */
+  }
+  
+  /* src/components/Home.css */
+.table td, .table th {
+    vertical-align: middle;
+  }
+  
+  .table .description-column {
+    max-width: 25vw; /* Adjust this value as needed */
+    word-wrap: break-word;
+    white-space: normal;
+  }
+  
