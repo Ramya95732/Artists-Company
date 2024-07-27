@@ -1,4 +1,3 @@
-// controllers/transactionController.js
 const transactionModel = require('../models/transactionModel');
 
 const addTransaction = (req, res) => {
@@ -22,7 +21,32 @@ const getAllTransactions = (req, res) => {
   });
 };
 
+const updateTransaction = (req, res) => {
+  const { id } = req.params;
+  const transaction = req.body;
+  transactionModel.updateTransaction(id, transaction, (err) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.status(200).send({ message: 'Transaction updated successfully' });
+    }
+  });
+};
+
+const deleteTransaction = (req, res) => {
+  const { id } = req.params;
+  transactionModel.deleteTransaction(id, (err) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.status(200).send({ message: 'Transaction deleted successfully' });
+    }
+  });
+};
+
 module.exports = {
   addTransaction,
-  getAllTransactions
+  getAllTransactions,
+  updateTransaction, // Ensure this is exported
+  deleteTransaction  // Ensure this is exported
 };

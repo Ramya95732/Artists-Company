@@ -1,4 +1,3 @@
-// models/transactionModel.js
 const db = require('../config/db');
 
 const addTransaction = (transaction, callback) => {
@@ -44,7 +43,51 @@ const getAllTransactions = (callback) => {
   });
 };
 
+const updateTransaction = (id, transaction, callback) => {
+  const { type, amount, description, date } = transaction;
+  if (!type || !amount || !description || !date) {
+    return callback(new Error('All fields are required'));
+  }
+
+  // Calculate the new running balance
+  let running_balance = 0;
+
+  db.get('SELECT running_balance FROM transactions ORDER BY id DESC LIMIT 1', (err, row) => {
+    if (err) {
+      return callback(err);
+    }
+
+    running_balance = row ? row.running_balance : 0;
+
+    if (type === 'Credit') {
+      running_balance += parseFloat(amount);
+    } else if (type === 'Debit') {
+      running_balance -= parseFloat(amount);
+    }
+
+    const sql = `UPDATE transactions SET type = ?, amount = ?, description = ?, date = ?, running_balance = ? WHERE id = ?`;
+    db.run(sql, [type, amount, description, date, running_balance, id], function (err) {
+      if (err) {
+        return callback(err);
+      }
+      callback(null);
+    });
+  });
+};
+
+const deleteTransaction = (id, callback) => {
+  const sql = `DELETE FROM transactions WHERE id = ?`;
+  db.run(sql, [id], function (err) {
+    if (err) {
+      return callback(err);
+    }
+    callback(null);
+  });
+};
+
 module.exports = {
   addTransaction,
   getAllTransactions,
+  updateTransaction,
+  deleteTransaction
 };
