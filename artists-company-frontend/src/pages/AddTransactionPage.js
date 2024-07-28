@@ -50,7 +50,7 @@ const AddTransactionPage = () => {
     setErrors({}); // Clear errors if validation passes
 
     try {
-      const response = await fetch('http://localhost:5000/api/transactions', {
+      const response = await fetch('https://artists-company-4.onrender.com/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

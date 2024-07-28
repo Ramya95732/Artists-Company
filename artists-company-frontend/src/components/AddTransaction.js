@@ -12,7 +12,7 @@ const AddTransaction = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/transactions', { type, amount, description });
+      await axios.post('https://artists-company-4.onrender.com/api/transactions', { type, amount, description });
       window.location.href = '/';
     } catch (error) {
       console.error('Error adding transaction:', error);

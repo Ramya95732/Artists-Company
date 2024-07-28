@@ -25,7 +25,7 @@ const Home = () => {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/transactions');
+      const response = await fetch('https://artists-company-4.onrender.com/api/transactions');
       if (!response.ok) {
         throw new Error('Failed to fetch transactions');
       }
@@ -61,7 +61,7 @@ const Home = () => {
 
   const handleAddTransaction = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/transactions', {
+      const response = await fetch('https://artists-company-4.onrender.com/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ const Home = () => {
 
   const handleEditTransaction = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/transactions/${currentTransaction.id}`, {
+      const response = await fetch(`https://artists-company-4.onrender.com/api/transactions/${currentTransaction.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -102,7 +102,7 @@ const Home = () => {
   const handleDeleteTransaction = async () => {
     if (currentTransaction) {
       try {
-        const response = await fetch(`http://localhost:5000/api/transactions/${currentTransaction.id}`, {
+        const response = await fetch(`https://artists-company-4.onrender.com/api/transactions/${currentTransaction.id}`, {
           method: 'DELETE',
         });
         if (!response.ok) {
